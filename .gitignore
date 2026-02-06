@@ -1,0 +1,16 @@
+# Base de datos SQLite (muy importante)
+*.db
+*.sqlite3
+
+# Entorno virtual de Python
+venv/
+
+# Archivos de compilación de Reflex y Frontend
+.web/
+assets/
+
+# Configuración local y caché
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
