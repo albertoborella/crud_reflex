@@ -1,6 +1,8 @@
 import reflex as rx
 from app.models import BienAlquilado
 from app.pages.total_bienes import total_bienes
+from app.pages.inquilinos import inquilinos
+from app.states.InquilinoState import InquilinoState
 from rxconfig import config
 
 
@@ -34,3 +36,4 @@ def index() -> rx.Component:
 app = rx.App()
 app.add_page(index)
 app.add_page(total_bienes, route="/bienes")
+app.add_page(inquilinos, route="/inquilinos", on_load=InquilinoState.get_inquilinos)

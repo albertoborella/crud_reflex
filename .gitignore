@@ -1,3 +1,6 @@
+.states
+.web
+assets/external/
 # Base de datos SQLite (muy importante)
 *.db
 *.sqlite3

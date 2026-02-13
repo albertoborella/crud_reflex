@@ -1,10 +1,16 @@
 import reflex as rx
-from app.models import BienAlquilado
+from app.models import BienAlquilado, Inquilino
 from datetime import date
 
 class BienesAlquilerState(rx.State):
+    inquilinos: list[Inquilino] = []
+    inquilinos_opciones: list[str] = []   # 👈 ESTA LÍNEA
+    inquilino_id: str = ""
+
     bienes: list[BienAlquilado] = []
     form_data: dict = {}
+
+    inquilinos: list[Inquilino] = []
 
     modo_edicion: bool = False
     id_editando: int | None = None
@@ -16,7 +22,7 @@ class BienesAlquilerState(rx.State):
     descripcion: str = ""
     precio_mensual: str = ""
     fecha_pago_mensual: str = ""
-    fecha_inicio_contrato: str = ""
+    fecha_final_contrato: str = ""
     disponible: bool = True
     observaciones: str = ""
 
@@ -48,8 +54,8 @@ class BienesAlquilerState(rx.State):
         self.fecha_pago_mensual = value
 
     @rx.event
-    def set_fecha_inicio_contrato(self, value: str):
-        self.fecha_inicio_contrato = value
+    def set_fecha_final_contrato(self, value: str):
+        self.fecha_final_contrato = value
 
     @rx.event
     def set_disponible(self, value: bool):
@@ -58,6 +64,11 @@ class BienesAlquilerState(rx.State):
     @rx.event
     def set_observaciones(self, value: str):
         self.observaciones = value
+
+    @rx.event
+    def set_inquilino_id(self, value: str):
+        self.inquilino_id = int(value) if value else None
+
 
     # Limpiar formulario
     @rx.event
@@ -70,7 +81,7 @@ class BienesAlquilerState(rx.State):
         self.descripcion = ""
         self.precio_mensual = ""
         self.fecha_pago_mensual = ""
-        self.fecha_inicio_contrato = ""
+        self.fecha_final_contrato = ""
         self.disponible = True
         self.observaciones = ""
 
@@ -102,10 +113,11 @@ class BienesAlquilerState(rx.State):
             descripcion=form_data.get("descripcion"),
             direccion=form_data.get("direccion"),
             precio_mensual=float(form_data.get("precio_mensual", 0)),
-            fecha_inicio_contrato=parse_date(form_data.get("fecha_inicio_contrato")),
+            fecha_final_contrato=parse_date(form_data.get("fecha_final_contrato")),
             fecha_pago_mensual=parse_date(form_data.get("fecha_pago_mensual")),
             disponible=form_data.get("disponible") == "on",
             observaciones=form_data.get("observaciones"),
+            inquilino_id=int(self.inquilino_id) if self.inquilino_id else None,
         )
 
         with rx.session() as session:
@@ -134,7 +146,7 @@ class BienesAlquilerState(rx.State):
             self.direccion = r.direccion
             self.precio_mensual = str(r.precio_mensual or "")
             self.fecha_pago_mensual = str(r.fecha_pago_mensual)
-            self.fecha_inicio_contrato = str(r.fecha_inicio_contrato)
+            self.fecha_final_contrato = str(r.fecha_final_contrato)
             self.disponible = r.disponible
             self.observaciones = r.observaciones
 
@@ -161,9 +173,9 @@ class BienesAlquilerState(rx.State):
                 date.fromisoformat(self.fecha_pago_mensual)
                 if self.fecha_pago_mensual else None
             )
-            r.fecha_inicio_contrato = (
-                date.fromisoformat(self.fecha_inicio_contrato)
-                if self.fecha_inicio_contrato else None
+            r.fecha_final_contrato = (
+                date.fromisoformat(self.fecha_final_contrato)
+                if self.fecha_final_contrato else None
             )
             r.disponible = self.disponible
             r.observaciones = self.observaciones
@@ -198,6 +210,27 @@ class BienesAlquilerState(rx.State):
         self.get_bienes()
 
         return rx.toast.success("Registro eliminado correctamente")
+    
+    # Trae todos los inquilinos registrados
+    @rx.event
+    def get_inquilinos(self):
+        with rx.session() as session:
+            self.inquilinos = session.exec(
+                Inquilino.select().order_by(Inquilino.razon_social)
+            ).all()
+
+    @rx.event
+    def cargar_inquilinos(self):
+        with rx.session() as session:
+            self.inquilinos = session.exec(
+                Inquilino.select().order_by(Inquilino.razon_social)
+            ).all()
+
+        self.inquilinos_opciones = [
+            f"{i.id}|{i.razon_social}" for i in self.inquilinos
+        ]
+
+
 
 
 

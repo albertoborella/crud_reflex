@@ -27,12 +27,12 @@ def formulario():
                 ),
 
                 rx.vstack(
-                    rx.text("Inicio del contrato", font_size="0.8em"),
+                    rx.text("Fin del contrato", font_size="0.8em"),
                     rx.input(
-                        name="fecha_inicio_contrato",
+                        name="fecha_final_contrato",
                         type="date",
-                        value=BienesAlquilerState.fecha_inicio_contrato,
-                        on_change=BienesAlquilerState.set_fecha_inicio_contrato,
+                        value=BienesAlquilerState.fecha_final_contrato,
+                        on_change=BienesAlquilerState.set_fecha_final_contrato,
                         width="100%",
                     ),
                     spacing="1",
@@ -54,15 +54,19 @@ def formulario():
 
                 rx.vstack(
                     rx.text("Inquilino", font_size="0.8em"),
-                    rx.input(
-                        name="nombre",
-                        value=BienesAlquilerState.nombre,
-                        on_change=BienesAlquilerState.set_nombre,
+                    rx.select(
+                        items=BienesAlquilerState.inquilinos_opciones,
+                        placeholder="Seleccionar inquilino",
+                        value=BienesAlquilerState.inquilino_id,
+                        on_change=BienesAlquilerState.set_inquilino_id,
                         width="100%",
                     ),
                     spacing="1",
                     flex="2",
                 ),
+
+
+
 
                 rx.vstack(
                     rx.text("Dirección", font_size="0.8em"),
@@ -110,7 +114,7 @@ def formulario():
             rx.hstack(
 
                 rx.input(
-                    name="pecio_mensual",
+                    name="precio_mensual",
                     type="number",
                     step="0.01",
                     value=BienesAlquilerState.precio_mensual,
@@ -164,7 +168,10 @@ def total_bienes() -> rx.Component:
             max_width="1400px",
             margin_bottom="40px",
         ),
-        on_mount=BienesAlquilerState.get_bienes,
+        on_mount=[
+            BienesAlquilerState.get_bienes,
+            BienesAlquilerState.get_inquilinos,
+            ],
         width="100%",
         spacing="8",
         align="center",
