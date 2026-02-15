@@ -12,7 +12,6 @@ def formulario():
             # FILA 1
             # -------------------------
             rx.hstack(
-
                 rx.vstack(
                     rx.text("Mes y año de alquiler", font_size="0.8em"),
                     rx.input(
@@ -31,7 +30,7 @@ def formulario():
                     rx.input(
                         name="fecha_final_contrato",
                         type="date",
-                        value=BienesAlquilerState.fecha_final_contrato,
+                        value=BienesAlquilerState.fecha_final_contrato | "",
                         on_change=BienesAlquilerState.set_fecha_final_contrato,
                         width="100%",
                     ),
@@ -51,22 +50,19 @@ def formulario():
                     spacing="1",
                     flex="1",
                 ),
-
                 rx.vstack(
                     rx.text("Inquilino", font_size="0.8em"),
                     rx.select(
-                        items=BienesAlquilerState.inquilinos_opciones,
+                        name="inquilino",
+                        items=BienesAlquilerState.nombres_inquilinos,
                         placeholder="Seleccionar inquilino",
-                        value=BienesAlquilerState.inquilino_id,
-                        on_change=BienesAlquilerState.set_inquilino_id,
+                        value=BienesAlquilerState.nombre_inquilino_seleccionado,
+                        on_change=BienesAlquilerState.set_inquilino_desde_nombre,
                         width="100%",
                     ),
                     spacing="1",
                     flex="2",
                 ),
-
-
-
 
                 rx.vstack(
                     rx.text("Dirección", font_size="0.8em"),

@@ -3,7 +3,6 @@ from app.models import Inquilino
 
 class InquilinoState(rx.State):
     inquilinos: list[Inquilino] = []
-    #inquilinos_opciones: list[str] = []
     inquilino_id: str = ""
     razon_social: str = ""
     domicilio: str = ""
@@ -77,13 +76,7 @@ class InquilinoState(rx.State):
                 Inquilino.select().order_by(Inquilino.razon_social)
             ).all()
 
-        # ⚠️ SOLO strings
-        self.inquilinos_opciones = [
-            f"{i.id}|{i.razon_social}" for i in self.inquilinos
-        ]
-
-
-        
+              
     # Editar Inquilino
     @rx.event
     def editar_inquilino(self, id: int):
