@@ -13,29 +13,75 @@ class State(rx.State):
 
 
 def index() -> rx.Component:
-    # Welcome Page (Index)
-    return rx.container(
+    return rx.center(
         rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
+            # Título con sombra para que resalte sobre el fondo
+            rx.heading(
+                "Gestión de Alquiler de Inmuebles", 
+                font_family="Montserrat",
+                size="8", 
+                margin_bottom="1.5em",
+                color="white",
+                text_shadow="2px 2px 4px rgba(0,0,0,0.3)"
             ),
-            rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
+            rx.hstack(
+                rx.link(
+                    rx.card(
+                        rx.vstack(
+                            rx.icon("layers", size=30), # Iconos opcionales para más estilo
+                            rx.heading("Cobranzas", size="4"),
+                            align="center",
+                        ),
+                        padding="2em",
+                        _hover={"transform": "scale(1.05)", "transition": "0.2s"},
+                    ),
+                    href="/bienes",
+                ),
+                rx.link(
+                    rx.card(
+                        rx.vstack(
+                            rx.icon("file-text", size=30),
+                            rx.heading("Contratos", size="4"),
+                            align="center",
+                        ),
+                        padding="2em",
+                        _hover={"transform": "scale(1.05)", "transition": "0.2s"},
+                    ),
+                    href="/contratos",
+                ),
+                rx.link(
+                    rx.card(
+                        rx.vstack(
+                            rx.icon("users", size=30),
+                            rx.heading("Inquilinos", size="4"),
+                            align="center",
+                        ),
+                        padding="2em",
+                        _hover={"transform": "scale(1.05)", "transition": "0.2s"},
+                    ),
+                    href="/inquilinos",
+                ),
+                spacing="6",
+                justify="center",
             ),
-            spacing="5",
-            #justify="center",
-            min_height="85vh",
+            align="center",
         ),
+        width="100%",
+        height="100vh",
+        # FONDO PROFESIONAL: Un degradado entre azul oscuro y petróleo
+        background="linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
     )
 
 
+    
 
-app = rx.App()
+
+
+app = rx.App(
+    stylesheets=[
+        "https://fonts.googleapis.com",
+    ],
+)
 app.add_page(index)
 app.add_page(total_bienes, route="/bienes")
 app.add_page(inquilinos, route="/inquilinos", on_load=InquilinoState.get_inquilinos)
