@@ -14,6 +14,8 @@ class BienAlquilado(rx.Model, table=True):
     disponible: bool | None = None
     observaciones: str | None = None
 
+    contratos: list["Contrato"] = Relationship(back_populates="bien")
+
     inquilino_id: int | None = Field(default=None, foreign_key="inquilino.id")
     inquilino: "Inquilino" = Relationship(back_populates="bienes")
 
@@ -25,3 +27,15 @@ class Inquilino(rx.Model, table=True):
     cuit: str | None = None
 
     bienes: list["BienAlquilado"] = Relationship(back_populates="inquilino")
+    contratos: list["Contrato"] = Relationship(back_populates="inquilino")
+
+class Contrato(rx.Model, table=True):
+    fecha_inicial: date | None = None
+    fecha_final: date | None = None
+    contrato_vigente: bool = Field(default=True)
+    # FOREIGN_KEY
+    inquilino_id: int | None = Field(default=None,foreign_key="inquilino.id")
+    bien_id: int | None = Field(foreign_key="bienalquilado.id") 
+    # RELACIONES (Lado Muchos)
+    inquilino : "Inquilino" = Relationship(back_populates="contratos")
+    bien: "BienAlquilado" = Relationship(back_populates="contratos") 
